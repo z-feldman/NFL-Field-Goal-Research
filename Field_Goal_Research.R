@@ -8,23 +8,25 @@ library(stringi)
 library(stringr)
 library(ggbeeswarm)
 library(cowplot)
+library(gtable)
 library(grid)
 library(lemon)
 
 # Load Data ---------------------------------------------------------------
 
 
-pbp2009 <- read_csv("https://raw.githubusercontent.com/CroppedClamp/nflscrapR-data/AddBetterData/play_by_play_data/regular_season/reg_pbp_2009.csv")
-pbp2010 <- read_csv("https://raw.githubusercontent.com/CroppedClamp/nflscrapR-data/AddBetterData/play_by_play_data/regular_season/reg_pbp_2010.csv")
-pbp2011 <- read_csv("https://raw.githubusercontent.com/CroppedClamp/nflscrapR-data/AddBetterData/play_by_play_data/regular_season/reg_pbp_2011.csv")
-pbp2012 <- read_csv("https://raw.githubusercontent.com/CroppedClamp/nflscrapR-data/AddBetterData/play_by_play_data/regular_season/reg_pbp_2012.csv")
-pbp2013 <- read_csv("https://raw.githubusercontent.com/CroppedClamp/nflscrapR-data/AddBetterData/play_by_play_data/regular_season/reg_pbp_2013.csv")
-pbp2014 <- read_csv("https://raw.githubusercontent.com/CroppedClamp/nflscrapR-data/AddBetterData/play_by_play_data/regular_season/reg_pbp_2014.csv")
-pbp2015 <- read_csv("https://raw.githubusercontent.com/CroppedClamp/nflscrapR-data/AddBetterData/play_by_play_data/regular_season/reg_pbp_2015.csv")
-pbp2016 <- read_csv("https://raw.githubusercontent.com/CroppedClamp/nflscrapR-data/AddBetterData/play_by_play_data/regular_season/reg_pbp_2016.csv")
-pbp2017 <- read_csv("https://raw.githubusercontent.com/CroppedClamp/nflscrapR-data/AddBetterData/play_by_play_data/regular_season/reg_pbp_2017.csv")
-pbp2018 <- read_csv("https://raw.githubusercontent.com/CroppedClamp/nflscrapR-data/AddBetterData/play_by_play_data/regular_season/reg_pbp_2018.csv")
-pbp2019 <- read_csv("https://raw.githubusercontent.com/CroppedClamp/nflscrapR-data/AddBetterData/play_by_play_data/regular_season/reg_pbp_2019.csv")
+pbp2009 <- read_csv("https://raw.githubusercontent.com/z-feldman/nfl_data/master/data/pbp2009.csv")
+pbp2010 <- read_csv("https://raw.githubusercontent.com/z-feldman/nfl_data/master/data/pbp2010.csv")
+pbp2011 <- read_csv("https://raw.githubusercontent.com/z-feldman/nfl_data/master/data/pbp2011.csv")
+pbp2012 <- read_csv("https://raw.githubusercontent.com/z-feldman/nfl_data/master/data/pbp2012.csv")
+pbp2013 <- read_csv("https://raw.githubusercontent.com/z-feldman/nfl_data/master/data/pbp2013.csv")
+pbp2014 <- read_csv("https://raw.githubusercontent.com/z-feldman/nfl_data/master/data/pbp2014.csv")
+pbp2015 <- read_csv("https://raw.githubusercontent.com/z-feldman/nfl_data/master/data/pbp2015.csv")
+pbp2016 <- read_csv("https://raw.githubusercontent.com/z-feldman/nfl_data/master/data/pbp2016.csv")
+pbp2017 <- read_csv("https://raw.githubusercontent.com/z-feldman/nfl_data/master/data/pbp2017.csv")
+pbp2018 <- read_csv("https://raw.githubusercontent.com/z-feldman/nfl_data/master/data/pbp2018.csv")
+pbp2019 <- read_csv("https://raw.githubusercontent.com/z-feldman/nfl_data/master/data/pbp2019.csv")
+
 
 
 
@@ -61,7 +63,7 @@ pbp_poss <- pbp %>% drop_na(score_differential, score_differential_post) %>%
          num_poss_change = num_poss_post - num_poss # change in possessions on that play
   )
 
-# A few basic averages, can change to different data frames (fg, fg_account_miss, fg_seven_poss) if interested
+# A few basic averages, can change to different data frames (fg, fg_account_miss, fg_seven_poss created below) if interested
 
 pbp_poss %>% filter(play_type == "field_goal") %>% group_by(num_poss) %>% summarise(mean_wpa = mean(wpa, na.rm = T)) 
 pbp_poss %>% filter(play_type == "field_goal") %>% group_by(num_poss_post) %>% summarise(mean_wpa = mean(wpa, na.rm = T)) 
@@ -120,9 +122,6 @@ fg_seven_poss <- fg %>%
 
 
 # plotting function taken from stackoverflow user Artem Sokolov----
-library(gtable)
-library(cowplot)
-
 shift_legend <- function(p) {
   pnls <- cowplot::plot_to_gtable(p) %>% gtable::gtable_filter("panel") %>%
     with(setNames(grobs, layout$name)) %>% purrr::keep(~identical(.x,zeroGrob()))
@@ -151,23 +150,16 @@ all_account_p <- ggplot(data = fg_account_miss, aes(x = as.factor(num_poss_chang
         plot.subtitle = element_text(face = "italic"),
         plot.caption = element_text(family = "mono", face = "italic", size = rel(0.8), hjust = 1, vjust = -10),
         legend.text = element_text(family = "mono", face = "italic", size = rel(1.2)),
-        legend.title = element_text(size = rel(1.2))) +
+        legend.title = element_text(size = rel(1.2)),
+        plot.background = element_rect(fill = alpha(colour = "ivory1", alpha = 1))) +
   labs(title = "Win Probability Added on Field Goal Attempts", 
-       subtitle = "Faceted by Number of Score Differential Possessions Before Play (2009-2019)", 
+       subtitle = "Faceted by Number of Score Differential Possessions Before Play (2009-2019, regular season)", 
        caption = "Data from: @weightroomshoe, @nflscrapR \nGraphic by: @ZachFeldman3",
        x = "Number of Score Differential Possessions Changed on Play (if field goal attempt is made)", 
        y = "Win Probability Added")
  
   
 shift_legend(all_account_p)
-
-
-
-
-
-
-
-
 
 
 
