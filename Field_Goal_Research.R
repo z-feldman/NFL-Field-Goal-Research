@@ -7,7 +7,9 @@ library(magrittr)
 library(stringi)
 library(stringr)
 library(ggbeeswarm)
-
+library(cowplot)
+library(grid)
+library(lemon)
 
 # Load Data ---------------------------------------------------------------
 
@@ -23,6 +25,8 @@ pbp2016 <- read_csv("https://raw.githubusercontent.com/CroppedClamp/nflscrapR-da
 pbp2017 <- read_csv("https://raw.githubusercontent.com/CroppedClamp/nflscrapR-data/AddBetterData/play_by_play_data/regular_season/reg_pbp_2017.csv")
 pbp2018 <- read_csv("https://raw.githubusercontent.com/CroppedClamp/nflscrapR-data/AddBetterData/play_by_play_data/regular_season/reg_pbp_2018.csv")
 pbp2019 <- read_csv("https://raw.githubusercontent.com/CroppedClamp/nflscrapR-data/AddBetterData/play_by_play_data/regular_season/reg_pbp_2019.csv")
+
+
 
 
 pbp <- rbind(pbp2009, pbp2010, pbp2011, pbp2012, pbp2013, pbp2014, pbp2015, pbp2016, pbp2017, pbp2018, pbp2019)
