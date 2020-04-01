@@ -63,11 +63,6 @@ pbp_poss <- pbp %>% drop_na(score_differential, score_differential_post) %>%
          num_poss_change = num_poss_post - num_poss # change in possessions on that play
   )
 
-# A few basic averages, can change to different data frames (fg, fg_account_miss, fg_seven_poss created below) if interested
-
-pbp_poss %>% filter(play_type == "field_goal") %>% group_by(num_poss) %>% summarise(mean_wpa = mean(wpa, na.rm = T)) 
-pbp_poss %>% filter(play_type == "field_goal") %>% group_by(num_poss_post) %>% summarise(mean_wpa = mean(wpa, na.rm = T)) 
-pbp_poss %>% filter(play_type == "field_goal") %>% group_by(num_poss_change) %>% summarise(mean_wpa = mean(wpa, na.rm = T)) 
 
 ##### Start testing scenarios #####
 # can't see a ton, too much data
@@ -119,6 +114,15 @@ fg_seven_poss <- fg %>%
          
          num_poss_change = num_poss_post - num_poss) 
 
+
+# A few basic averages, can change to different data frames (fg, fg_account_miss, fg_seven_poss created below) if interested
+
+pbp_poss %>% filter(play_type == "field_goal") %>% group_by(num_poss) %>% summarise(mean_wpa = mean(wpa, na.rm = T)) 
+pbp_poss %>% filter(play_type == "field_goal") %>% group_by(num_poss_post) %>% summarise(mean_wpa = mean(wpa, na.rm = T)) 
+pbp_poss %>% filter(play_type == "field_goal") %>% group_by(num_poss_change) %>% summarise(mean_wpa = mean(wpa, na.rm = T)) 
+
+fg_account_miss %>% group_by(num_poss, num_poss_change) %>% summarise(mean_wpa = mean(wpa), `% negative wpa` = sum(wpa < 0)/n())
+fg_account_miss %>% filter(num_poss_change == 2) %>% View()
 
 
 # plotting function taken from stackoverflow user Artem Sokolov----
